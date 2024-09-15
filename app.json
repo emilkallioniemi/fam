@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "HelloWorld",
-    "slug": "expo-template-default",
+    "name": "Fam",
+    "slug": "fam",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -13,13 +13,15 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.kallioniemil.fam"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.kallioniemil.fam"
     },
     "web": {
       "bundler": "metro",
@@ -31,6 +33,18 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "e9c1a4d1-8d09-4b4f-afd2-d2ff640bc8e6"
+      }
+    },
+    "owner": "kallioniemil",
+    "updates": {
+      "url": "https://u.expo.dev/e9c1a4d1-8d09-4b4f-afd2-d2ff640bc8e6"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
     }
   }
 }
