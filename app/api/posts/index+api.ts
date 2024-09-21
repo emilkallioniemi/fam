@@ -1,8 +1,8 @@
-import { sql } from "@vercel/postgres";
+import { db } from "@/drizzle/db";
+import { MessageTable } from "@/drizzle/schema";
 
 export async function GET(request: Request) {
-  const result = await sql`SELECT * from POSTS`;
-  const posts = result.rows;
+  const posts = await db.query.MessageTable.findMany();
   if (posts) {
     return Response.json(posts, { status: 200 });
   }
@@ -11,9 +11,19 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const result =
-    await sql`INSERT INTO POSTS (post) VALUES (${body.post}) RETURNING id`;
-  const createdPost = result.rows[0].id;
+  if (!body.content) {
+    return Response.json("Content is required", { status: 400 });
+  }
+  const createdPost = (
+    await db
+      .insert(MessageTable)
+      .values({
+        content: body.content,
+      })
+      .returning({
+        id: MessageTable.id,
+      })
+  )[0];
   if (createdPost) {
     return Response.json(createdPost, { status: 201 });
   }

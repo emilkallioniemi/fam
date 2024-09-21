@@ -1,8 +1,9 @@
-import { sql } from "@vercel/postgres";
+import { db } from "@/drizzle/db";
+import { MessageTable } from "@/drizzle/schema";
+import { eq } from "drizzle-orm";
 
 export async function GET(request: Request, params: Record<string, string>) {
-  const result = await sql`SELECT * FROM POSTS WHERE id = ${params.id}`;
-  const foundPost = result.rows[0];
+  const foundPost = await db.query.MessageTable.findFirst();
   if (foundPost) {
     return Response.json(foundPost, { status: 200 });
   }
@@ -11,23 +12,23 @@ export async function GET(request: Request, params: Record<string, string>) {
 
 export async function PUT(request: Request, params: Record<string, string>) {
   const body = await request.json();
-  const result = await sql`
-      UPDATE POSTS 
-      SET post = ${body.post} 
-      WHERE id = ${params.id} 
-      RETURNING *
-    `;
-  const updatedPost = result.rows[0];
+  const updatedPost = await db
+    .update(MessageTable)
+    .set({
+      content: body.content,
+    })
+    .returning();
   if (updatedPost) {
     return Response.json(updatedPost);
   }
   return Response.json("Post not found", { status: 404 });
 }
 
-export async function DELETE(request: Request, params: Record<string, string>) {
-  const result =
-    await sql`DELETE FROM POSTS WHERE id = ${params.id} RETURNING id`;
-  const deletedPost = result.rows[0];
+export async function DELETE(request: Request, params: Record<string, number>) {
+  const deletedPost = await db
+    .delete(MessageTable)
+    .where(eq(MessageTable.id, params.id))
+    .returning();
   if (deletedPost) {
     return Response.json(deletedPost);
   }
